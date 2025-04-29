@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:15.2-alpine
+    container_name: webapp-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: webapp
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - webapp-network
+
+  app:
+    build: .
+    container_name: webapp-app
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    networks:
+      - webapp-network
+
+networks:
+  webapp-network:
+    driver: bridge

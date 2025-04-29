@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>DVD Rental Service</title>
+</head>
+<body>
+<h1>DVD Rental Service</h1>
+
+<h2>Available DVDs</h2>
+<ul>
+    <li th:each="instance : ${instances}">
+        [[${instance.dvd.title}]] - $[[${instance.dvd.dailyPrice}]]/day
+    </li>
+</ul>
+
+<h2>Add New DVD</h2>
+<form action="/dvd/add" method="post">
+    Title: <input type="text" name="title" required><br>
+    Description: <input type="text" name="description" required><br>
+    Daily Price: <input type="number" step="0.01" name="dailyPrice" required><br>
+    <button type="submit">Add DVD</button>
+</form>
+
+<h2>Add DVD Instance</h2>
+<form action="/instance/add" method="post">
+    <select name="dvdId">
+        <option th:each="dvd : ${dvds}" th:value="${dvd.id}" th:text="${dvd.title}"></option>
+    </select>
+    <button type="submit">Add Instance</button>
+</form>
+
+<h2>Rent a DVD</h2>
+<form action="/rent" method="post">
+    <select name="instanceId">
+        <option th:each="instance : ${instances}" th:value="${instance.id}" th:text="${instance.dvd.title}"></option>
+    </select><br>
+    Your Name: <input type="text" name="renterName" required><br>
+    Days to Rent: <input type="number" name="rentalDays" required><br>
+    <button type="submit">Rent</button>
+</form>
+
+<h2>Current Rentals</h2>
+<ul>
+    <li th:each="rental : ${rentals}">
+        [[${rental.renterName}]] rented [[${rental.dvdInstance.dvd.title}]] from
+        [[${#dates.format(rental.rentDate, 'dd/MM/yyyy')}]] to
+        [[${#dates.format(rental.returnDate, 'dd/MM/yyyy')}]].
+        <br/>
+        Price: $[[${rental.totalPrice}]].
+        <form action="/return" method="post" style="display:inline;">
+            <input type="hidden" name="rentalId" th:value="${rental.id}">
+            <button type="submit">Return</button>
+        </form>
+    </li>
+</ul>
+
+</body>
+</html>
