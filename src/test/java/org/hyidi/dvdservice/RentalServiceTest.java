@@ -1,5 +1,6 @@
 package org.hyidi.dvdservice;
 
+import org.hyidi.dvdservice.model.Dvd;
 import org.hyidi.dvdservice.model.DvdInstance;
 import org.hyidi.dvdservice.model.Rental;
 import org.hyidi.dvdservice.repository.RentalRepository;
@@ -36,8 +37,13 @@ class RentalServiceTest {
         String renterName = "John Doe";
         int rentalDays = 5;
 
+        Dvd dvd = new Dvd();
+        dvd.setId(instanceId);
+        dvd.setDailyPrice(2.0);
+
         DvdInstance instance = new DvdInstance();
         instance.setId(instanceId);
+        instance.setDvd(dvd);
         instance.setStatus(DvdInstance.Status.AVAILABLE);
 
         Rental savedRental = new Rental();
