@@ -26,9 +26,9 @@ jobs:
         with:
           path: ./dvdservice
 
-      - name: Run docker-compose
+      - name: Run docker compose
         working-directory: ./dvdservice
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: Package with Maven (skip tests)
         working-directory: ./dvdservice
