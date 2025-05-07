@@ -7,9 +7,15 @@ on:
       - master
 
 jobs:
-  run-tests:
+  build-and-test:
     runs-on: ubuntu-latest
+
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          path: dvdservice
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -21,25 +27,19 @@ jobs:
         with:
           maven-version: 4.0.0-rc-3
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          path: ./dvdservice
-
-      - name: Run docker compose
-        working-directory: ./dvdservice
+      - name: Run Docker Compose
+        working-directory: dvdservice
         run: docker compose up -d
 
       - name: Package with Maven (skip tests)
-        working-directory: ./dvdservice
+        working-directory: dvdservice
         run: mvn install -DskipTests --no-transfer-progress
 
       - name: Start the application
-        working-directory: ./dvdservice
+        working-directory: dvdservice
         run: java -jar target/*.jar &
 
-      - name: Wait for the service
-        timeout-minutes: 1
+      - name: Wait for service
         run: |
           echo "Waiting for app to be available..."
           for i in {1..10}; do
@@ -49,5 +49,5 @@ jobs:
           echo "App not available!" && exit 1
 
       - name: Run tests
-        working-directory: ./dvdservice
+        working-directory: dvdservice
         run: mvn test --no-transfer-progress
